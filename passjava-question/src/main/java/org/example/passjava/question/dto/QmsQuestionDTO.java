@@ -16,5 +16,7 @@ public class QmsQuestionDTO {
 
     private Long type;
 
+    @Min(value = 1, message = "等级不能小于1")
+    @Max(value = 3, message = "等级不能大于3")
     private Integer level;
 }

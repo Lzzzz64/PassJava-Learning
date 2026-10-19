@@ -1,8 +1,12 @@
 package org.example.passjava.question.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.example.passjava.question.dto.QmsQuestionQueryDTO;
 import org.example.passjava.question.dto.QmsQuestionDTO;
 import org.example.passjava.question.entity.QmsQuestion;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.passjava.question.vo.PageVO;
+import org.example.passjava.question.vo.QmsQuestionVO;
 
 /**
 * @author 123456
@@ -12,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface QmsQuestionService extends IService<QmsQuestion> {
     Boolean saveQuestion(QmsQuestionDTO qmsQuestionDTO);
     Boolean updateQuestion(Long id, QmsQuestionDTO qmsQuestionDTO);
+    PageVO<QmsQuestionVO> page(QmsQuestionQueryDTO query);
 }

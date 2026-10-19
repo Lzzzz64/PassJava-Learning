@@ -1,9 +1,14 @@
 package org.example.passjava.question.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.validation.Valid;
+import org.example.passjava.question.common.Result;
 import org.example.passjava.question.dto.QmsQuestionDTO;
+import org.example.passjava.question.dto.QmsQuestionQueryDTO;
 import org.example.passjava.question.entity.QmsQuestion;
 import org.example.passjava.question.service.QmsQuestionService;
+import org.example.passjava.question.vo.PageVO;
+import org.example.passjava.question.vo.QmsQuestionVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,27 +23,41 @@ public class QMSQuestionController {
     private QmsQuestionService qmsQuestionService;
 
     @GetMapping
-    public List<QmsQuestion> list() {
-        return qmsQuestionService.list();
+    public Result<List<QmsQuestion>> list() {
+        return Result.success(qmsQuestionService.list());
     }
 
     @GetMapping("/{id}")
-    public QmsQuestion getById(@PathVariable Long id) {
-        return qmsQuestionService.getById(id);
+    public Result<QmsQuestion> getById(@PathVariable Long id) {
+        return Result.success(qmsQuestionService.getById(id));
     }
 
     @PostMapping
-    public Boolean create(@RequestBody QmsQuestionDTO qmsQuestionDTO) {
-        return qmsQuestionService.saveQuestion(qmsQuestionDTO);
+    public Result<QmsQuestionDTO> create(@Valid @RequestBody QmsQuestionDTO qmsQuestionDTO) {
+        Boolean b = qmsQuestionService.saveQuestion(qmsQuestionDTO);
+        if (b)
+            return Result.success(qmsQuestionDTO,"添加成功");
+        return Result.error(500, "添加失败");
     }
 
     @PutMapping("/{id}")
-    public Boolean update(@PathVariable Long id, @RequestBody QmsQuestionDTO qmsQuestionDTO) {
-        return qmsQuestionService.updateQuestion(id, qmsQuestionDTO);
+    public Result<QmsQuestionDTO> update(@PathVariable Long id, @Valid @RequestBody QmsQuestionDTO qmsQuestionDTO) {
+        Boolean b = qmsQuestionService.updateQuestion(id, qmsQuestionDTO);
+        if (b)
+            return Result.success(qmsQuestionDTO,"更新成功");
+        return Result.error(500, "更新失败");
     }
 
     @DeleteMapping("/{id}")
-    public Boolean delete(@PathVariable Long id) {
-        return qmsQuestionService.removeById(id);
+    public Result<Long> delete(@PathVariable Long id) {
+        boolean b = qmsQuestionService.removeById(id);
+        if (b)
+            return Result.success(id,"删除成功");
+        return Result.error(500, "删除失败");
+    }
+
+    @GetMapping("/page")
+    public Result<PageVO<QmsQuestionVO>> page(@Valid @RequestBody QmsQuestionQueryDTO query) {
+        return Result.success(qmsQuestionService.page(query),"查询成功");
     }
 }
