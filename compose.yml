@@ -1,0 +1,21 @@
+
+services:
+  mysql:
+    image: mysql:8.0
+    command: --skip-character-set-client-handshake
+    container_name: passjava-mysql
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:3307:3306"
+
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: passjava_question
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d:ro
+
+volumes:
+  mysql_data:
