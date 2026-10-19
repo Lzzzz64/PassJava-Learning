@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.passjava.question.mapper.QmsTypeMapper">
+
+    <resultMap id="BaseResultMap" type="org.example.passjava.question.entity.QmsType">
+            <id property="id" column="id" />
+            <result property="type" column="type" />
+            <result property="comments" column="comments" />
+            <result property="logoUrl" column="logo_url" />
+            <result property="delFlag" column="del_flag" />
+            <result property="createTime" column="create_time" />
+            <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,type,comments,logo_url,del_flag,create_time,
+        update_time
+    </sql>
+</mapper>
