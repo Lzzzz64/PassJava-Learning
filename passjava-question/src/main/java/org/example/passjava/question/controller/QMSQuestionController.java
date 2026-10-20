@@ -22,14 +22,28 @@ public class QMSQuestionController {
     @Autowired
     private QmsQuestionService qmsQuestionService;
 
+    /**
+     * 列表查询题目
+     * @return
+     */
     @GetMapping
     public Result<List<QmsQuestion>> list() {
         return Result.success(qmsQuestionService.list());
     }
 
+    /**
+     * 根据id查询题目
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     public Result<QmsQuestion> getById(@PathVariable Long id) {
         return Result.success(qmsQuestionService.getById(id));
+    /**
+     * 创建题目
+     * @param qmsQuestionDTO
+     * @return
+     */
     }
 
     @PostMapping
@@ -40,6 +54,12 @@ public class QMSQuestionController {
         return Result.error(500, "添加失败");
     }
 
+    /**
+     * 更新题目
+     * @param id
+     * @param qmsQuestionDTO
+     * @return
+     */
     @PutMapping("/{id}")
     public Result<QmsQuestionDTO> update(@PathVariable Long id, @Valid @RequestBody QmsQuestionDTO qmsQuestionDTO) {
         Boolean b = qmsQuestionService.updateQuestion(id, qmsQuestionDTO);
@@ -47,6 +67,11 @@ public class QMSQuestionController {
             return Result.success(qmsQuestionDTO,"更新成功");
         return Result.error(500, "更新失败");
     }
+    /**
+     * 删除题目
+     * @param id
+     * @return
+     */
 
     @DeleteMapping("/{id}")
     public Result<Long> delete(@PathVariable Long id) {
@@ -56,6 +81,11 @@ public class QMSQuestionController {
         return Result.error(500, "删除失败");
     }
 
+    /**
+     * 分页查询题目
+     * @param query
+     * @return
+     */
     @GetMapping("/page")
     public Result<PageVO<QmsQuestionVO>> page(@Valid @RequestBody QmsQuestionQueryDTO query) {
         return Result.success(qmsQuestionService.page(query),"查询成功");
