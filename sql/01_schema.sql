@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS qms_question (
     display_order INT NOT NULL DEFAULT 0,
     sub_title VARCHAR(255),
     type BIGINT NOT NULL,
+    create_by BIGINT DEFAULT NULL COMMENT '创建人用户ID',
     enable TINYINT NOT NULL DEFAULT 1,
     del_flag TINYINT NOT NULL DEFAULT 0,
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,

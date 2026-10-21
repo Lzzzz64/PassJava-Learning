@@ -11,6 +11,13 @@ spring:
     username: root
     password: ${DB_PASSWORD:123456}
 
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+        username: nacos
+        password: ${NACOS_PASSWORD:nacos}
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
