@@ -92,6 +92,10 @@ public class SecurityConfig {
                                 "/auth/register", "/auth/login")
                         .permitAll()
 
+                        .requestMatchers(HttpMethod.GET,
+                                "/internal/**")
+                        .hasRole("ADMIN")
+
                         .requestMatchers("/auth/me")
                         .authenticated()
 
