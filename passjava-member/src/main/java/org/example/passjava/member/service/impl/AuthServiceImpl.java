@@ -1,15 +1,15 @@
 
-package org.example.passjava.question.service.impl;
+package org.example.passjava.member.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.example.passjava.question.dto.UmsUserLoginDTO;
-import org.example.passjava.question.dto.UmsUserRegisterDTO;
-import org.example.passjava.question.entity.UmsUser;
-import org.example.passjava.question.mapper.UmsUserMapper;
-import org.example.passjava.question.service.AuthService;
-import org.example.passjava.question.service.JwtService;
-import org.example.passjava.question.vo.LoginVO;
-import org.example.passjava.question.vo.UmsUserVO;
+import org.example.passjava.member.dto.UmsUserLoginDTO;
+import org.example.passjava.member.dto.UmsUserRegisterDTO;
+import org.example.passjava.member.entity.UmsUser;
+import org.example.passjava.member.mapper.UmsUserMapper;
+import org.example.passjava.member.service.AuthService;
+import org.example.passjava.member.service.JwtService;
+import org.example.passjava.member.vo.LoginVO;
+import org.example.passjava.member.vo.UmsUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;

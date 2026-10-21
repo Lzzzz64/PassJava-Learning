@@ -1,9 +1,6 @@
 
 package org.example.passjava.question.config;
 
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,8 +8,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -28,12 +23,7 @@ import java.util.Base64;
 public class SecurityConfig {
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public SecretKey jwtKey(
+    public JwtDecoder jwtDecoder(
             @Value("${app.jwt.secret}") String secret) {
 
         byte[] bytes = Base64.getDecoder().decode(secret);
@@ -43,18 +33,9 @@ public class SecurityConfig {
                     "JWT密钥至少需要32字节");
         }
 
-        return new SecretKeySpec(bytes, "HmacSHA256");
-    }
+        SecretKey key =
+                new SecretKeySpec(bytes, "HmacSHA256");
 
-    @Bean
-    public JwtEncoder jwtEncoder(SecretKey key) {
-        JWKSource<SecurityContext> source =
-                new ImmutableSecret<>(key);
-        return new NimbusJwtEncoder(source);
-    }
-
-    @Bean
-    public JwtDecoder jwtDecoder(SecretKey key) {
         return NimbusJwtDecoder.withSecretKey(key)
                 .macAlgorithm(MacAlgorithm.HS256)
                 .build();
@@ -62,6 +43,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
+
         JwtGrantedAuthoritiesConverter authorities =
                 new JwtGrantedAuthoritiesConverter();
 
@@ -70,6 +52,7 @@ public class SecurityConfig {
 
         JwtAuthenticationConverter converter =
                 new JwtAuthenticationConverter();
+
         converter.setJwtGrantedAuthoritiesConverter(authorities);
 
         return converter;
@@ -86,24 +69,24 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/auth/register",
-                                "/auth/login"
-                        ).permitAll()
 
                         .requestMatchers(HttpMethod.GET,
-                                "/questions", "/questions/**").permitAll()
+                                "/questions", "/questions/**")
+                        .permitAll()
 
                         .requestMatchers(HttpMethod.POST,
-                                "/questions", "/questions/**").hasRole("ADMIN")
+                                "/questions", "/questions/**")
+                        .hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.PUT,
-                                "/questions/**").hasRole("ADMIN")
+                                "/questions/**")
+                        .hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.DELETE,
-                                "/questions/**").hasRole("ADMIN")
+                                "/questions/**")
+                        .hasRole("ADMIN")
 
-                        .anyRequest().authenticated()
+                        .anyRequest().denyAll()
                 )
                 .oauth2ResourceServer(oauth -> oauth
                         .jwt(jwt -> jwt

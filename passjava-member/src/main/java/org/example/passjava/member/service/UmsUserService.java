@@ -1,7 +1,8 @@
-package org.example.passjava.question.service;
+package org.example.passjava.member.service;
 
-import org.example.passjava.question.entity.UmsUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.example.passjava.member.entity.UmsUser;
+
 
 /**
 * @author 123456

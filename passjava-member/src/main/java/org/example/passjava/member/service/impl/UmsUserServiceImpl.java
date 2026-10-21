@@ -1,9 +1,9 @@
-package org.example.passjava.question.service.impl;
+package org.example.passjava.member.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.example.passjava.question.entity.UmsUser;
-import org.example.passjava.question.service.UmsUserService;
-import org.example.passjava.question.mapper.UmsUserMapper;
+import org.example.passjava.member.entity.UmsUser;
+import org.example.passjava.member.mapper.UmsUserMapper;
+import org.example.passjava.member.service.UmsUserService;
 import org.springframework.stereotype.Service;
 
 /**

@@ -1,4 +1,4 @@
-package org.example.passjava.question.dto;
+package org.example.passjava.member.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

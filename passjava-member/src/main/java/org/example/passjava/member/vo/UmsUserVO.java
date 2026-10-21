@@ -1,4 +1,4 @@
-package org.example.passjava.question.vo;
+package org.example.passjava.member.vo;
 
 import lombok.Data;
 

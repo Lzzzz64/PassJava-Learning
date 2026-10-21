@@ -1,12 +1,12 @@
-package org.example.passjava.question.controller;
+package org.example.passjava.member.controller;
 
 import jakarta.validation.Valid;
-import org.example.passjava.question.common.Result;
-import org.example.passjava.question.dto.UmsUserLoginDTO;
-import org.example.passjava.question.dto.UmsUserRegisterDTO;
-import org.example.passjava.question.service.AuthService;
-import org.example.passjava.question.vo.LoginVO;
-import org.example.passjava.question.vo.UmsUserVO;
+import org.example.passjava.member.common.Result;
+import org.example.passjava.member.dto.UmsUserLoginDTO;
+import org.example.passjava.member.dto.UmsUserRegisterDTO;
+import org.example.passjava.member.service.AuthService;
+import org.example.passjava.member.vo.LoginVO;
+import org.example.passjava.member.vo.UmsUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
