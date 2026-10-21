@@ -49,6 +49,11 @@ public class QmsQuestion {
     private Long type;
 
     /**
+     *
+     */
+    private Long createBy;
+
+    /**
      * 
      */
     private Integer enable;
