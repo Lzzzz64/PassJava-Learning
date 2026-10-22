@@ -13,6 +13,7 @@
     <modules>
         <module>passjava-question</module>
         <module>passjava-member</module>
+        <module>passjava-gateway</module>
     </modules>
 
     <properties>

@@ -1,0 +1,45 @@
+
+server:
+  port: 8088
+
+spring:
+  application:
+    name: passjava-gateway
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+
+    gateway:
+      server:
+        webflux:
+          routes:
+
+            # 用户服务路由
+            - id: member-route
+              uri: lb://passjava-member
+              predicates:
+                - Path=/api/auth/**
+              filters:
+                - StripPrefix=1
+
+            # 题库服务路由
+            - id: question-route
+              uri: lb://passjava-question
+              predicates:
+                - Path=/api/questions/**
+              filters:
+                - StripPrefix=1
+
+            # OpenFeign 演示接口
+            - id: demo-route
+              uri: lb://passjava-question
+              predicates:
+                - Path=/api/admin/questions/**
+              filters:
+                - StripPrefix=1
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
