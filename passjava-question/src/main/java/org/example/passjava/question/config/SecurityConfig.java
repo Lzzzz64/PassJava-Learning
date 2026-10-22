@@ -74,6 +74,10 @@ public class SecurityConfig {
                                 "/questions", "/questions/**")
                         .permitAll()
 
+                        .requestMatchers(HttpMethod.GET,
+                                "/admin/questions", "/admin/questions/**")
+                        .hasRole("ADMIN")
+
                         .requestMatchers(HttpMethod.POST,
                                 "/questions", "/questions/**")
                         .hasRole("ADMIN")
