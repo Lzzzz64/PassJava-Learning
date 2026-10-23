@@ -44,6 +44,23 @@ services:
     volumes:
       - nacos_data:/home/nacos/data
 
+  redis:
+    image: redis:7.4-alpine
+    container_name: passjava-redis
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:6380:6379"
+
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+
+    volumes:
+      - redis_data:/data
+
 volumes:
   mysql_data:
   nacos_data:
+  redis_data:

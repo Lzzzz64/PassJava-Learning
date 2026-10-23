@@ -38,7 +38,7 @@ public class QMSQuestionController {
      */
     @GetMapping("/{id}")
     public Result<QmsQuestion> getById(@PathVariable Long id) {
-        return Result.success(qmsQuestionService.getById(id));
+        return Result.success(qmsQuestionService.getQuestionById(id));
     /**
      * 创建题目
      * @param qmsQuestionDTO
@@ -48,10 +48,8 @@ public class QMSQuestionController {
 
     @PostMapping
     public Result<QmsQuestionDTO> create(@Valid @RequestBody QmsQuestionDTO qmsQuestionDTO) {
-        Boolean b = qmsQuestionService.saveQuestion(qmsQuestionDTO);
-        if (b)
-            return Result.success(qmsQuestionDTO,"添加成功");
-        return Result.error(500, "添加失败");
+        qmsQuestionService.saveQuestion(qmsQuestionDTO);
+        return Result.success(qmsQuestionDTO,"添加成功");
     }
 
     /**
@@ -62,10 +60,8 @@ public class QMSQuestionController {
      */
     @PutMapping("/{id}")
     public Result<QmsQuestionDTO> update(@PathVariable Long id, @Valid @RequestBody QmsQuestionDTO qmsQuestionDTO) {
-        Boolean b = qmsQuestionService.updateQuestion(id, qmsQuestionDTO);
-        if (b)
-            return Result.success(qmsQuestionDTO,"更新成功");
-        return Result.error(500, "更新失败");
+        qmsQuestionService.updateQuestion(id, qmsQuestionDTO);
+        return Result.success(qmsQuestionDTO,"更新成功");
     }
     /**
      * 删除题目
@@ -75,10 +71,8 @@ public class QMSQuestionController {
 
     @DeleteMapping("/{id}")
     public Result<Long> delete(@PathVariable Long id) {
-        boolean b = qmsQuestionService.removeById(id);
-        if (b)
-            return Result.success(id,"删除成功");
-        return Result.error(500, "删除失败");
+        qmsQuestionService.deleteQuestion(id);
+        return Result.success(id,"删除成功");
     }
 
     /**

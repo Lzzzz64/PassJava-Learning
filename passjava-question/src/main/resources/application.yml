@@ -18,6 +18,12 @@ spring:
         username: nacos
         password: ${NACOS_PASSWORD:nacos}
 
+  data:
+    redis:
+      host: localhost
+      port: 6380
+      timeout: 3s
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

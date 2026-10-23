@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.passjava.question.dto.QmsQuestionDTO;
 import org.example.passjava.question.dto.QmsQuestionQueryDTO;
 import org.example.passjava.question.entity.QmsQuestion;
 import org.example.passjava.question.entity.QmsType;
+import org.example.passjava.question.service.QmsQuestionCacheService;
 import org.example.passjava.question.service.QmsQuestionService;
 import org.example.passjava.question.mapper.QmsQuestionMapper;
 import org.example.passjava.question.service.QmsTypeService;
@@ -34,8 +37,52 @@ public class QmsQuestionServiceImpl extends ServiceImpl<QmsQuestionMapper, QmsQu
     private QmsQuestionMapper qmsQuestionMapper;
     @Autowired
     private QmsTypeService qmsTypeMapper;
+    @Autowired
+    private QmsQuestionCacheService qmsQuestionCacheService;
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
-    public Boolean saveQuestion(QmsQuestionDTO qmsQuestionDTO) {
+    public QmsQuestion getQuestionById(Long id) {
+        String cache = qmsQuestionCacheService.get(id);
+        if(cache != null){
+            System.out.println("从缓存中获取题目，id=" + id);
+            if(cache.equals(QmsQuestionCacheService.NULL_VALUE)){
+                throw new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "问题不存在"
+                );
+            }
+
+            try{
+                QmsQuestion qmsQuestionCache = objectMapper.readValue(cache, QmsQuestion.class);
+                return qmsQuestionCache;
+            }catch (JsonProcessingException e){
+                System.out.println("题目缓存序列化失败，进入mysql查找，id=" + id + ", e=" + e);
+                qmsQuestionCacheService.evict(id);
+            }
+        }
+        System.out.println("从数据库中获取题目，id=" + id);
+        QmsQuestion qmsQuestion = qmsQuestionMapper.selectById(id);
+        if(qmsQuestion == null){
+            qmsQuestionCacheService.saveNull(id);
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "问题不存在"
+            );
+        }
+
+        try{
+            qmsQuestionCacheService.save(id, objectMapper.writeValueAsString(qmsQuestion));
+        }catch (JsonProcessingException e){
+            System.out.println("缓存序列化失败：" + id);
+        }
+
+        return qmsQuestion;
+    }
+
+    @Override
+    public void saveQuestion(QmsQuestionDTO qmsQuestionDTO) {
         QmsQuestion qmsQuestion = new QmsQuestion();
         qmsQuestion.setTitle(qmsQuestionDTO.getTitle());
         qmsQuestion.setAnswer(qmsQuestionDTO.getAnswer());
@@ -46,11 +93,18 @@ public class QmsQuestionServiceImpl extends ServiceImpl<QmsQuestionMapper, QmsQu
         qmsQuestion.setCreateTime(new Date());
         qmsQuestion.setUpdateTime(new Date());
         int i = qmsQuestionMapper.insert(qmsQuestion);
-        return i > 0;
+
+        if(i != 1)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "问题不存在"
+            );
+
+        qmsQuestionCacheService.evict(qmsQuestion.getId());
     }
 
     @Override
-    public Boolean updateQuestion(Long id, QmsQuestionDTO qmsQuestionDTO) {
+    public void updateQuestion(Long id, QmsQuestionDTO qmsQuestionDTO) {
         QmsQuestion qmsQuestion = qmsQuestionMapper.selectById(id);
         if(qmsQuestion == null) {
             throw new ResponseStatusException(
@@ -65,7 +119,27 @@ public class QmsQuestionServiceImpl extends ServiceImpl<QmsQuestionMapper, QmsQu
         qmsQuestion.setUpdateTime(new Date());
         int i = qmsQuestionMapper.updateById(qmsQuestion);
 
-        return i > 0;
+        if(i != 1){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "问题不存在"
+            );
+        }
+
+        qmsQuestionCacheService.evict(qmsQuestion.getId());
+    }
+
+    @Override
+    public void deleteQuestion(Long id) {
+        int i = qmsQuestionMapper.deleteById(id);
+
+        if(i != 1)
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "问题不存在"
+            );
+
+        qmsQuestionCacheService.evict(id);
     }
 
     @Override

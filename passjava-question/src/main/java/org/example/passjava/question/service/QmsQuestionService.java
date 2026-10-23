@@ -1,6 +1,5 @@
 package org.example.passjava.question.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.example.passjava.question.dto.QmsQuestionQueryDTO;
 import org.example.passjava.question.dto.QmsQuestionDTO;
 import org.example.passjava.question.entity.QmsQuestion;
@@ -14,7 +13,9 @@ import org.example.passjava.question.vo.QmsQuestionVO;
 * @createDate 2026-10-19 14:55:51
 */
 public interface QmsQuestionService extends IService<QmsQuestion> {
-    Boolean saveQuestion(QmsQuestionDTO qmsQuestionDTO);
-    Boolean updateQuestion(Long id, QmsQuestionDTO qmsQuestionDTO);
+    QmsQuestion getQuestionById(Long id);
+    void saveQuestion(QmsQuestionDTO qmsQuestionDTO);
+    void updateQuestion(Long id, QmsQuestionDTO qmsQuestionDTO);
+    void deleteQuestion(Long id);
     PageVO<QmsQuestionVO> page(QmsQuestionQueryDTO query);
 }
