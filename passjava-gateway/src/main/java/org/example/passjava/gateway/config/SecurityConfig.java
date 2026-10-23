@@ -105,6 +105,10 @@ public class SecurityConfig {
                         .pathMatchers("/api/auth/me")
                         .authenticated()
 
+                        // 学习模块需要登录
+                        .pathMatchers("/api/study/**")
+                        .authenticated()
+
                         // 未明确开放的地址全部拒绝
                         .anyExchange()
                         .denyAll()

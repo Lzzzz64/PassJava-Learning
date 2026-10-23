@@ -14,6 +14,7 @@
         <module>passjava-question</module>
         <module>passjava-member</module>
         <module>passjava-gateway</module>
+        <module>passjava-study</module>
     </modules>
 
     <properties>

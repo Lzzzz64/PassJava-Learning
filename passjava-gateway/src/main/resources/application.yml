@@ -32,6 +32,14 @@ spring:
               filters:
                 - StripPrefix=1
 
+            # 题库服务路由
+            - id: study-route
+              uri: lb://passjava-study
+              predicates:
+                - Path=/api/study/**
+              filters:
+                - StripPrefix=1
+
             # OpenFeign 演示接口
             - id: demo-route
               uri: lb://passjava-question
