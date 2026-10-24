@@ -1,12 +1,14 @@
 package org.example.passjava.study.mapper;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.*;
+import org.example.passjava.study.VO.SmsDailyStatVO;
 import org.example.passjava.study.entity.SmsDailyStat;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
 * @author 123456
@@ -27,6 +29,25 @@ public interface SmsDailyStatMapper extends BaseMapper<SmsDailyStat> {
     int increase(
             @Param("userId") Long userId,
             @Param("studyDate") Date studyDate
+    );
+
+    @Select("""
+    SELECT
+        study_date AS date,
+        view_count AS viewCount
+    FROM sms_daily_stat
+    WHERE user_id = #{userId}
+      AND study_date BETWEEN #{start} AND #{end}
+    ORDER BY study_date ASC
+    """)
+    @Results({
+            @Result(column = "date", property = "date"),
+            @Result(column = "viewCount", property = "viewCount")
+    })
+    List<SmsDailyStatVO> selectRange(
+            @Param("userId") Long userId,
+            @Param("start") LocalDate start,
+            @Param("end") LocalDate end
     );
 }
 

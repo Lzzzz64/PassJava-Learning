@@ -1,8 +1,10 @@
 package org.example.passjava.study.controller;
 
 import org.example.passjava.study.VO.QmsQuestionVO;
+import org.example.passjava.study.VO.SmsDailyStatVO;
 import org.example.passjava.study.VO.SmsStudyRecordVO;
 import org.example.passjava.study.common.Result;
+import org.example.passjava.study.service.SmsDailyStatService;
 import org.example.passjava.study.service.SmsStudyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +20,8 @@ import java.util.List;
 public class SmsStudyController {
     @Autowired
     private SmsStudyService smsStudyService;
-
+    @Autowired
+    private SmsDailyStatService smsDailyStatService;
     /**
      * 获取当前用户id
      * @param jwt
@@ -70,6 +73,18 @@ public class SmsStudyController {
         Long userId = currentUserId(jwt);
         List<SmsStudyRecordVO> views = smsStudyService.getViews(userId);
         return Result.success(views,"查看用户"+currentUserName(jwt)+"学习记录成功");
+    }
+
+    /**
+     * 查看近七天学习情况统计
+     * @param jwt
+     * @return
+     */
+    @GetMapping("/stats")
+    public Result<List<SmsDailyStatVO>> getRecent7DailyStats(@AuthenticationPrincipal Jwt jwt) {
+        Long userId = currentUserId(jwt);
+        List<SmsDailyStatVO> dailyStats = smsDailyStatService.last7Days(userId);
+        return Result.success(dailyStats,"查看用户"+currentUserName(jwt)+"近七天学习情况统计成功");
     }
 
     /**

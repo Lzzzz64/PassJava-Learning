@@ -1,7 +1,10 @@
 package org.example.passjava.study.service;
 
+import org.example.passjava.study.VO.SmsDailyStatVO;
 import org.example.passjava.study.entity.SmsDailyStat;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
 * @author 123456
@@ -9,5 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2026-10-24 11:59:52
 */
 public interface SmsDailyStatService extends IService<SmsDailyStat> {
-
+    List<SmsDailyStatVO> last7Days(Long userId);
 }
