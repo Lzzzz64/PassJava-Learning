@@ -57,7 +57,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Result<Void>> handleException(
             Exception ex) {
-
         // 生产环境应通过日志框架记录异常详情，
         // 不要把堆栈信息直接返回给客户端。
         return ResponseEntity.status(

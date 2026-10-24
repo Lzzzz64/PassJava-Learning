@@ -8,6 +8,7 @@ import org.example.passjava.study.entity.SmsWrongQuestion;
 import org.example.passjava.study.mapper.SmsFavoriteMapper;
 import org.example.passjava.study.mapper.SmsViewLogMapper;
 import org.example.passjava.study.mapper.SmsWrongQuestionMapper;
+import org.example.passjava.study.mq.StudyEventPublisher;
 import org.example.passjava.study.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +28,8 @@ public class SmsStudyServiceImpl implements SmsStudyService {
     private SmsWrongQuestionMapper smsWrongQuestionMapper;
     @Autowired
     private QmsQuestionCheckService qmsQuestionCheckService;
-
+    @Autowired
+    private StudyEventPublisher studyEventPublisher;
     @Override
     public void recordView(Long userId, Long questionId) {
         qmsQuestionCheckService.checkExists(questionId);
@@ -35,6 +37,7 @@ public class SmsStudyServiceImpl implements SmsStudyService {
         if(i < 1)
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "记录失败");
+        studyEventPublisher.publishView(userId, questionId);
     }
 
     @Override

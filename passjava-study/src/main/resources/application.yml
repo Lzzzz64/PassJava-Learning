@@ -23,6 +23,24 @@ spring:
             connectTimeout: 3000
             readTimeout: 5000
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: rabbitmq
+    password: ${RABBITMQ_PASSWORD:123456}
+    virtual-host: /
+
+    publisher-confirm-type: correlated
+    publisher-returns: true
+
+    template:
+      mandatory: true
+
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 10
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

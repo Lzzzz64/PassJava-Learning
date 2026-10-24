@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.passjava.study.mapper.SmsProcessedEventMapper">
+
+    <resultMap id="BaseResultMap" type="org.example.passjava.study.entity.SmsProcessedEvent">
+            <id property="eventId" column="event_id" />
+            <result property="processedTime" column="processed_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        event_id,processed_time
+    </sql>
+</mapper>
