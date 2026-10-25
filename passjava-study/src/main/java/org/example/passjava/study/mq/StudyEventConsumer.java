@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -20,7 +21,8 @@ public class StudyEventConsumer {
             LoggerFactory.getLogger(StudyEventConsumer.class);
     @Autowired
     private SmsStudyEventProcessService smsStudyEventProcessService;
-
+    @Autowired
+    private RetryTemplate retryTemplate;
     @RabbitListener(queues = RabbitConfig.QUEUE)
     public void consume(
             SmsStudyViewEvent event,
@@ -32,8 +34,10 @@ public class StudyEventConsumer {
 
         try {
             // 业务执行完成时，数据库事务已提交
-            smsStudyEventProcessService.process(event);
-
+            retryTemplate.execute(context -> {
+                smsStudyEventProcessService.process(event);
+                return null;
+            });
             // 手动确认本条消息
             channel.basicAck(tag, false);
 

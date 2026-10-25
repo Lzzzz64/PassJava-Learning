@@ -50,3 +50,27 @@ CREATE TABLE sms_processed_event (
                                      event_id VARCHAR(64) PRIMARY KEY,
                                      processed_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- 尚未成功发布到 RabbitMQ 的业务事件
+CREATE TABLE sms_event_outbox (
+                                  event_id VARCHAR(64) PRIMARY KEY,
+
+                                  user_id BIGINT NOT NULL,
+                                  question_id BIGINT NOT NULL,
+                                  occurred_at DATETIME NOT NULL,
+
+                                  status TINYINT NOT NULL DEFAULT 0,
+                                  retry_count INT NOT NULL DEFAULT 0,
+
+                                  next_retry_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                  locked_at DATETIME NULL,
+
+                                  last_error VARCHAR(500),
+
+                                  create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                  update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                      ON UPDATE CURRENT_TIMESTAMP,
+
+                                  INDEX idx_status_retry (status, next_retry_at),
+                                  INDEX idx_status_locked (status, locked_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

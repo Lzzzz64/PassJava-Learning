@@ -30,14 +30,11 @@ public class SmsStudyServiceImpl implements SmsStudyService {
     private QmsQuestionCheckService qmsQuestionCheckService;
     @Autowired
     private StudyEventPublisher studyEventPublisher;
+    @Autowired
+    private SmsStudyViewCommandService studyViewCommandService;
     @Override
     public void recordView(Long userId, Long questionId) {
-        qmsQuestionCheckService.checkExists(questionId);
-        int i = smsViewLogMapper.recordView(userId, questionId);
-        if(i < 1)
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "记录失败");
-        studyEventPublisher.publishView(userId, questionId);
+        studyViewCommandService.recordAndCreateEvent(userId, questionId);
     }
 
     @Override
