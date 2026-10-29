@@ -1,0 +1,247 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: passjava-mysql
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:3307:3306"
+
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_DATABASE: passjava_question
+      TZ: Asia/Shanghai
+    command:
+      - --default-time-zone=+08:00
+      - --skip-character-set-client-handshake
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../sql:/docker-entrypoint-initdb.d:ro
+
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "mysqladmin ping -h 127.0.0.1 --silent"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  nacos:
+    image: nacos/nacos-server:v3.0.3
+    container_name: passjava-nacos
+    restart: unless-stopped
+
+    environment:
+      MODE: standalone
+      NACOS_AUTH_ENABLE: "false"
+
+      # Nacos 启动必需的认证参数
+      NACOS_AUTH_TOKEN: "${NACOS_AUTH_TOKEN}"
+      NACOS_AUTH_IDENTITY_KEY: "passjava"
+      NACOS_AUTH_IDENTITY_VALUE: "passjava-local"
+
+      # JVM 内存配置
+      JVM_XMS: 256m
+      JVM_XMX: 512m
+      JVM_XMN: 128m
+
+    ports:
+      - "127.0.0.1:8080:8080"
+      - "127.0.0.1:8848:8848"
+      - "127.0.0.1:9848:9848"
+
+    volumes:
+      - nacos_data:/home/nacos/data
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: passjava-redis
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:6380:6379"
+
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+
+    volumes:
+      - redis_data:/data
+
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    container_name: passjava-rabbitmq
+    hostname: passjava-rabbitmq
+    restart: unless-stopped
+
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: "123456"
+
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  # ==========================
+  # 5. Member 用户服务
+  # ==========================
+  member:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        JAR_FILE: passjava-member/target/passjava-member-1.0-SNAPSHOT.jar
+
+    image: passjava/member:1.0
+    container_name: passjava-member
+    restart: unless-stopped
+
+    environment:
+      TZ: Asia/Shanghai
+      SERVER_PORT: 8082
+
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/passjava_question?serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR: nacos:8848
+      JWT_SECRET: ${JWT_SECRET}
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+      nacos:
+        condition: service_started
+
+
+  # ==========================
+  # 6. Question 题库服务
+  # ==========================
+  question:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        JAR_FILE: passjava-question/target/passjava-question-1.0-SNAPSHOT.jar
+
+    image: passjava/question:1.0
+    container_name: passjava-question
+    restart: unless-stopped
+
+    environment:
+      TZ: Asia/Shanghai
+      SERVER_PORT: 8081
+
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/passjava_question?serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR: nacos:8848
+      JWT_SECRET: ${JWT_SECRET}
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nacos:
+        condition: service_started
+
+
+  # ==========================
+  # 7. Study 学习服务
+  # ==========================
+  study:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        JAR_FILE: passjava-study/target/passjava-study-1.0-SNAPSHOT.jar
+
+    image: passjava/study:1.0
+    container_name: passjava-study
+    restart: unless-stopped
+
+    environment:
+      TZ: Asia/Shanghai
+      SERVER_PORT: 8083
+
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/passjava_study?serverTimezone=Asia/Shanghai
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: rabbitmq
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR: nacos:8848
+      JWT_SECRET: ${JWT_SECRET}
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      nacos:
+        condition: service_started
+
+
+  # ==========================
+  # 8. Gateway 网关
+  # ==========================
+  gateway:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      args:
+        JAR_FILE: passjava-gateway/target/passjava-gateway-1.0-SNAPSHOT.jar
+
+    image: passjava/gateway:1.0
+    container_name: passjava-gateway
+    restart: unless-stopped
+
+    environment:
+      TZ: Asia/Shanghai
+      SERVER_PORT: 8088
+
+      SPRING_CLOUD_NACOS_DISCOVERY_SERVER_ADDR: nacos:8848
+      JWT_SECRET: ${JWT_SECRET}
+
+    ports:
+      - "127.0.0.1:8088:8088"
+
+    depends_on:
+      nacos:
+        condition: service_started
+      member:
+        condition: service_started
+      question:
+        condition: service_started
+      study:
+        condition: service_started
+
+volumes:
+  mysql_data:
+  nacos_data:
+  redis_data:
+  rabbitmq_data:

@@ -20,6 +20,12 @@ public class QMSQuestionByAdminController {
     @Autowired
     private QMSQuestionByAdminService qmsQuestionByAdminService;
 
+    /**
+     * 根据id获取问题创建者的信息
+     * @param id
+     * @param jwt
+     * @return
+     */
     @GetMapping("/{id}")
     public Result<QmsAdminQuestionVO> getAdminQuestionById(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
         QmsAdminQuestionVO question = qmsQuestionByAdminService.getAdminQuestionById(id, jwt);

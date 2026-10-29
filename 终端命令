@@ -1,0 +1,22 @@
+# 1. Maven 打包四个微服务
+mvn clean package -DskipTests
+
+# 2. 构建 Docker 镜像
+docker compose --env-file docker/.env -f docker/compose.yml build
+
+# 3. 创建并启动容器
+docker compose --env-file docker/.env -f docker/compose.yml up -d
+
+# 4. 查看容器运行状态
+docker compose --env-file docker/.env -f docker/compose.yml ps
+
+
+----------------------
+# 第一步，在项目根目录重新打包：
+mvn -pl passjava-question -am clean package -DskipTests
+
+# 第二步，重新构建并更新 Study 容器
+docker compose --env-file docker/.env -f docker/compose.yml up -d --build question
+
+# 第三步，查看日志：
+docker logs -f passjava-study
