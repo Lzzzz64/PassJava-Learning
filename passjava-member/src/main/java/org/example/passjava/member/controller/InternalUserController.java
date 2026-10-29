@@ -1,5 +1,6 @@
 package org.example.passjava.member.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.passjava.member.common.Result;
 import org.example.passjava.member.entity.UmsUser;
 import org.example.passjava.member.service.InternalUserService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/internal")
+@Tag(name = "内部用户管理")
 public class InternalUserController {
     @Autowired
     private InternalUserService internalUserService;
@@ -23,6 +25,7 @@ public class InternalUserController {
      * @return
      */
     @GetMapping("/{id}")
+    @Tag(name = "根据id获取用户信息")
     public Result<UmsUserSummaryVO> getUser(@PathVariable Long id) {
         UmsUserSummaryVO umsUserSummaryVO = internalUserService.getUser(id);
         return Result.success(umsUserSummaryVO, "获取用户信息成功");

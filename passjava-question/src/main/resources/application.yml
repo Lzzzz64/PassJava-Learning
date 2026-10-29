@@ -24,6 +24,12 @@ spring:
       port: 6380
       timeout: 3s
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

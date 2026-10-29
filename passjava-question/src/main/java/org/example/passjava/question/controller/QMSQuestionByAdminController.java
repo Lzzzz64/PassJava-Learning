@@ -1,5 +1,7 @@
 package org.example.passjava.question.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.passjava.question.common.Result;
 import org.example.passjava.question.service.QMSQuestionByAdminService;
 import org.example.passjava.question.vo.QmsAdminQuestionVO;
@@ -15,6 +17,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/admin/questions")
+@Tag(name = "问题创建者管理", description = "OpenFeign问题创建者相关接口")
 public class QMSQuestionByAdminController {
 
     @Autowired
@@ -27,6 +30,7 @@ public class QMSQuestionByAdminController {
      * @return
      */
     @GetMapping("/{id}")
+    @Operation(summary = "根据id获取问题创建者的信息", description = "根据id获取问题创建者的信息")
     public Result<QmsAdminQuestionVO> getAdminQuestionById(@PathVariable Long id, @AuthenticationPrincipal Jwt jwt) {
         QmsAdminQuestionVO question = qmsQuestionByAdminService.getAdminQuestionById(id, jwt);
         return Result.success(question, "获取问题成功");

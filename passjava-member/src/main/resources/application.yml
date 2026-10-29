@@ -18,6 +18,12 @@ spring:
         username: nacos
         password: ${NACOS_PASSWORD:nacos}
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true

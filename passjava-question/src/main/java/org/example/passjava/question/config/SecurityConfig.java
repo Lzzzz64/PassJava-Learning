@@ -90,6 +90,15 @@ public class SecurityConfig {
                                 "/questions/**")
                         .hasRole("ADMIN")
 
+                        // Swagger 文档相关接口，不需要 JWT
+                        .requestMatchers(
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**"
+                        ).permitAll()
+
                         .anyRequest().denyAll()
                 )
                 .oauth2ResourceServer(oauth -> oauth

@@ -1,5 +1,6 @@
 package org.example.passjava.member.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.example.passjava.member.common.Result;
 import org.example.passjava.member.dto.UmsUserLoginDTO;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "认证管理", description = "注册、登录、获取当前登录用户信息")
 public class AuthController {
     @Autowired
     private AuthService authService;
@@ -24,6 +26,7 @@ public class AuthController {
      * @return
      */
     @PostMapping("/register")
+    @Tag(name = "注册")
     public Result register(@Valid @RequestBody UmsUserRegisterDTO dto) {
         Boolean b = authService.register(dto);
         if(b)
@@ -37,6 +40,7 @@ public class AuthController {
      * @return
      */
     @PostMapping("/login")
+    @Tag(name = "登录")
     public Result<LoginVO> login(@Valid @RequestBody UmsUserLoginDTO dto) {
         LoginVO login = authService.login(dto);
         if(login != null)
@@ -48,6 +52,7 @@ public class AuthController {
      * 获取当前登录用户信息
      * @return
      */
+    @Tag(name = "获取当前登录用户信息")
     @GetMapping("/me")
     public Result<UmsUserVO> me(@AuthenticationPrincipal Jwt jwt) {
         UmsUserVO umsUserVO = authService.me(jwt);

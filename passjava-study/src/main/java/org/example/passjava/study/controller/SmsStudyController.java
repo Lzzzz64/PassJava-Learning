@@ -1,5 +1,7 @@
 package org.example.passjava.study.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.passjava.study.VO.QmsQuestionVO;
 import org.example.passjava.study.VO.SmsDailyStatVO;
 import org.example.passjava.study.VO.SmsStudyRecordVO;
@@ -17,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/study")
+@Tag(name = "学习管理", description = "学习记录、统计、收藏、错题与管理接口")
 public class SmsStudyController {
     @Autowired
     private SmsStudyService smsStudyService;
@@ -57,6 +60,7 @@ public class SmsStudyController {
      * @return
      */
     @PostMapping("/views/{questionId}")
+    @Operation(summary = "记录学习一次", description = "记录学习一次")
     public Result<Void> recordView(@AuthenticationPrincipal Jwt jwt, @PathVariable Long questionId) {
         Long userId = currentUserId(jwt);
         smsStudyService.recordView(userId, questionId);
@@ -69,6 +73,7 @@ public class SmsStudyController {
      * @return
      */
     @GetMapping("/views")
+    @Operation(summary = "查看学习记录", description = "查看学习记录")
     public Result<List<SmsStudyRecordVO>> getViews(@AuthenticationPrincipal Jwt jwt) {
         Long userId = currentUserId(jwt);
         List<SmsStudyRecordVO> views = smsStudyService.getViews(userId);
@@ -81,6 +86,7 @@ public class SmsStudyController {
      * @return
      */
     @GetMapping("/stats")
+    @Operation(summary = "查看近七天学习情况统计", description = "查看近七天学习情况统计")
     public Result<List<SmsDailyStatVO>> getRecent7DailyStats(@AuthenticationPrincipal Jwt jwt) {
         Long userId = currentUserId(jwt);
         List<SmsDailyStatVO> dailyStats = smsDailyStatService.last7Days(userId);
@@ -93,6 +99,7 @@ public class SmsStudyController {
      * @return
      */
     @GetMapping("/favorites")
+    @Operation(summary = "查看我的收藏列表", description = "查看我的收藏列表")
     public Result<List<Long>> getFavorites(@AuthenticationPrincipal Jwt jwt) {
         Long userId = currentUserId(jwt);
         List<Long> favorites = smsStudyService.getFavorites(userId);
@@ -106,6 +113,7 @@ public class SmsStudyController {
      * @return
      */
     @PostMapping("/favorites/{questionId}")
+    @Operation(summary = "收藏题目", description = "收藏题目")
     public Result<Void> getFavoriteQuestions(@AuthenticationPrincipal Jwt jwt, @PathVariable Long questionId) {
         Long userId = currentUserId(jwt);
         smsStudyService.addFavorite(userId, questionId);
@@ -119,6 +127,7 @@ public class SmsStudyController {
      * @return
      */
     @DeleteMapping("/favorites/{questionId}")
+    @Operation(summary = "取消收藏", description = "取消收藏")
     public Result<Void> removeFavorite(@AuthenticationPrincipal Jwt jwt, @PathVariable Long questionId) {
         Long userId = currentUserId(jwt);
         smsStudyService.removeFavorite(userId, questionId);
@@ -132,6 +141,7 @@ public class SmsStudyController {
      * @return
      */
     @PostMapping("/wrongs/{questionId}")
+    @Operation(summary = "标记错题", description = "标记错题")
     public Result<Void> markWrong(@AuthenticationPrincipal Jwt jwt, @PathVariable Long questionId){
         Long userId = currentUserId(jwt);
         smsStudyService.markWrong(userId, questionId);
@@ -145,6 +155,7 @@ public class SmsStudyController {
      * @return
      */
     @DeleteMapping("/wrongs/{questionId}")
+    @Operation(summary = "取消标记", description = "取消标记")
     public Result<Void> removeWrong(@AuthenticationPrincipal Jwt jwt, @PathVariable Long questionId){
         Long userId = currentUserId(jwt);
         smsStudyService.removeWrong(userId, questionId);
@@ -157,6 +168,7 @@ public class SmsStudyController {
      * @return
      */
     @GetMapping("/wrongs")
+    @Operation(summary = "查看我的错题列表", description = "查看我的错题列表")
     public Result<List<SmsStudyRecordVO>> getWrongs(@AuthenticationPrincipal Jwt jwt) {
         Long userId = currentUserId(jwt);
         List<SmsStudyRecordVO> wrongs = smsStudyService.getWrongs(userId);
