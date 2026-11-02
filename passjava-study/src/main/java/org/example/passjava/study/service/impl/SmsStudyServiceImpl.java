@@ -70,7 +70,7 @@ public class SmsStudyServiceImpl implements SmsStudyService {
 
     @Override
     public void removeFavorite(Long userId, Long questionId) {
-        qmsQuestionCheckService.checkExists(questionId);
+//        qmsQuestionCheckService.checkExists(questionId);
         int i = smsFavoriteMapper.delete(new LambdaQueryWrapper<SmsFavorite>()
                 .eq(SmsFavorite::getUserId, userId)
                 .eq(SmsFavorite::getQuestionId, questionId));
