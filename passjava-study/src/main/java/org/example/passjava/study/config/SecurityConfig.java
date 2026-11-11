@@ -55,6 +55,11 @@ public class SecurityConfig {
                                 "/swagger-ui/**"
                         ).permitAll()
 
+                        .requestMatchers(
+                                "/actuator/health",
+                                "/actuator/prometheus"
+                        ).permitAll()
+
                         .requestMatchers("/study/**")
                         .authenticated()
                         .anyRequest().denyAll()

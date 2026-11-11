@@ -1,0 +1,37 @@
+
+groups:
+  - name: passjava-alerts
+    rules:
+
+      - alert: PassJavaServiceDown
+        expr: up{job="passjava-services"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PassJava微服务不可用"
+          description: "实例 {{ $labels.instance }} 已持续无法抓取"
+
+      - alert: MySQLUnavailable
+        expr: mysql_up == 0 or up{job="mysql"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MySQL监控检测到不可用"
+
+      - alert: OutboxFailedEvents
+        expr: max(passjava_outbox_failed) > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Outbox存在失败事件"
+
+      - alert: OutboxPendingTooMany
+        expr: max(passjava_outbox_pending) > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Outbox待发送事件积压"

@@ -99,6 +99,11 @@ public class SecurityConfig {
                                 "/swagger-ui/**"
                         ).permitAll()
 
+                        .requestMatchers(
+                                "/actuator/health",
+                                "/actuator/prometheus"
+                        ).permitAll()
+
                         .anyRequest().denyAll()
                 )
                 .oauth2ResourceServer(oauth -> oauth

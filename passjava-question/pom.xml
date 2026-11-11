@@ -129,6 +129,19 @@
 			<artifactId>testcontainers</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Spring Boot 健康检查与监控指标 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
+		<!-- Prometheus 指标格式导出 -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 	</dependencies>
 
 

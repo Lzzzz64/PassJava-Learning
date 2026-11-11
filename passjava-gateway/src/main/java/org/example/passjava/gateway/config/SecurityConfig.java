@@ -109,6 +109,13 @@ public class SecurityConfig {
                         .pathMatchers("/api/study/**")
                         .authenticated()
 
+                        // Actuator 监控接口
+                        .pathMatchers("/actuator/health")
+                        .permitAll()
+
+                        .pathMatchers("/actuator/prometheus")
+                        .permitAll()
+
                         // 未明确开放的地址全部拒绝
                         .anyExchange()
                         .denyAll()

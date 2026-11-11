@@ -32,3 +32,24 @@ app:
   jwt:
     secret: ${JWT_SECRET}
     expiration-minutes: 120
+
+management:
+  server:
+    port: 9091
+
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+
+  endpoint:
+    health:
+      show-details: never
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
