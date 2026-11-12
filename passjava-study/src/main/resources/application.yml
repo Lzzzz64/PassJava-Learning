@@ -22,6 +22,8 @@ spring:
           default:
             connectTimeout: 3000
             readTimeout: 5000
+      micrometer:
+        enabled: true
 
   rabbitmq:
     host: localhost
@@ -77,3 +79,18 @@ management:
     distribution:
       percentiles-histogram:
         http.server.requests: true
+
+  tracing:
+    sampling:
+      probability: 1.0
+
+  otlp:
+    tracing:
+      endpoint: ${OTLP_TRACING_ENDPOINT:http://localhost:4318/v1/traces}
+      transport: http
+      connect-timeout: 5s
+      read-timeout: 10s
+
+  observations:
+    annotations:
+      enabled: true

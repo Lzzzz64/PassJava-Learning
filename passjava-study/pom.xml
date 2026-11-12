@@ -132,6 +132,22 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Micrometer Tracing 到 OpenTelemetry 的桥接 -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-otel</artifactId>
+        </dependency>
+
+        <!-- 使用 OTLP 协议导出 Trace -->
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-exporter-otlp</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-micrometer</artifactId>
+        </dependency>
     </dependencies>
 
 
