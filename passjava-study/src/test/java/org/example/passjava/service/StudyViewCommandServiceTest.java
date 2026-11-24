@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -163,13 +164,10 @@ class StudyViewCommandServiceTest {
         classes = PassjavaStudyApplication.class,
         properties = {
                 "app.jwt.secret=U8DDPRiGakUDEwVRjxxRkMP1c1RfYj0W8SmE+InP83c=",
-
-                // 关闭 Outbox 定时发布任务
-                "passjava.outbox.publisher.enabled=false",
-
-                // 关闭 Outbox 监控定时任务
-                "passjava.outbox.metrics.enabled=false"
         }
+)
+@DirtiesContext(
+        classMode = DirtiesContext.ClassMode.AFTER_CLASS
 )
 class StudyViewCommandServiceTransactionTest extends StudyTestcontainers {
 
