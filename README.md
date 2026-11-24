@@ -17,3 +17,5 @@
 5. **数据库与容器部署：** 使用 MyBatis-Plus 完成题库和学习业务持久化，通过联合唯一索引与原子 SQL 处理重复收藏和学习计数；利用 Dockerfile 与 Docker Compose 完成四个 Spring Boot 服务及 MySQL、Redis、Nacos、RabbitMQ 的容器化联调。
 
 **项目验证：** 完成 JWT 权限验证、Redis 缓存命中与失效、RabbitMQ 重复消息幂等、Outbox 异常恢复以及微服务跨容器调用等功能测试。
+
+**持续集成：** 使用 GitHub Actions 实现自动化构建与测试。
