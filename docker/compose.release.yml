@@ -1,0 +1,18 @@
+
+services:
+
+  gateway:
+    image: ghcr.io/${GHCR_OWNER}/passjava-gateway:${PASSJAVA_IMAGE_TAG}
+    pull_policy: always
+
+  member:
+    image: ghcr.io/${GHCR_OWNER}/passjava-member:${PASSJAVA_IMAGE_TAG}
+    pull_policy: always
+
+  question:
+    image: ghcr.io/${GHCR_OWNER}/passjava-question:${PASSJAVA_IMAGE_TAG}
+    pull_policy: always
+
+  study:
+    image: ghcr.io/${GHCR_OWNER}/passjava-study:${PASSJAVA_IMAGE_TAG}
+    pull_policy: always
