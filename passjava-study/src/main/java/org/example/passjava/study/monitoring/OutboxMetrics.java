@@ -3,6 +3,7 @@ package org.example.passjava.study.monitoring;
 
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -10,6 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Component
+@ConditionalOnProperty(
+        name = "passjava.outbox.metrics.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 public class OutboxMetrics {
 
     private final JdbcTemplate jdbcTemplate;

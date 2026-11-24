@@ -6,6 +6,7 @@ import org.example.passjava.study.mapper.SmsViewLogMapper;
 import org.example.passjava.study.service.QmsQuestionCheckService;
 import org.example.passjava.study.service.impl.SmsStudyViewCommandServiceImpl;
 
+import org.example.passjava.study.support.StudyTestcontainers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -161,10 +162,16 @@ class StudyViewCommandServiceTest {
 @SpringBootTest(
         classes = PassjavaStudyApplication.class,
         properties = {
-                "app.jwt.secret=U8DDPRiGakUDEwVRjxxRkMP1c1RfYj0W8SmE+InP83c="
+                "app.jwt.secret=U8DDPRiGakUDEwVRjxxRkMP1c1RfYj0W8SmE+InP83c=",
+
+                // 关闭 Outbox 定时发布任务
+                "passjava.outbox.publisher.enabled=false",
+
+                // 关闭 Outbox 监控定时任务
+                "passjava.outbox.metrics.enabled=false"
         }
 )
-class StudyViewCommandServiceTransactionTest {
+class StudyViewCommandServiceTransactionTest extends StudyTestcontainers {
 
     @Autowired
     private SmsStudyViewCommandServiceImpl studyViewCommandService;

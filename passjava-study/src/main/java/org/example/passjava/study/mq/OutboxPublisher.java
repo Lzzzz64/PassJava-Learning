@@ -9,6 +9,7 @@ import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,11 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@ConditionalOnProperty(
+        name = "passjava.outbox.publisher.enabled",
+        havingValue = "true",
+        matchIfMissing = true
+)
 public class OutboxPublisher {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(StudyEventPublisher.class);
 
