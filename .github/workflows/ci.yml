@@ -1,0 +1,97 @@
+
+name: PassJava CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# 最小权限原则
+permissions:
+  contents: read
+
+# 同一分支有新提交时，取消旧的重复构建
+concurrency:
+  group: passjava-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  build-and-test:
+
+    name: Build And Test
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 40
+
+    steps:
+
+      # 1. 获取 GitHub 仓库代码
+      - name: Checkout source
+        uses: actions/checkout@v7
+
+      # 2. 安装 JDK 17，并缓存 Maven 依赖
+      - name: Set up JDK 17
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+          cache-dependency-path: |
+            pom.xml
+            **/pom.xml
+
+      # 3. 检查 Java 和 Maven
+      - name: Show environment
+        run: |
+          java -version
+          mvn -version
+
+      # 4. 检查 Docker 是否可用
+      - name: Check Docker
+        run: docker info
+
+      # 5. 构建四个微服务并运行全部测试
+      - name: Build and test
+        run: |
+          ./mvnw --batch-mode --no-transfer-progress clean verify
+
+      # 6. 保存测试报告，即使测试失败也上传
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: passjava-test-reports
+          path: |
+            **/target/surefire-reports/**
+            **/target/failsafe-reports/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      # 7. 整理四个服务的 JAR
+      - name: Collect JAR files
+        if: success()
+        run: |
+          mkdir -p staging
+
+          find passjava-*/target \
+            -maxdepth 1 \
+            -type f \
+            -name '*.jar' \
+            -exec cp {} staging/ \;
+
+          echo "Build artifacts:"
+          ls -lh staging
+
+          test "$(find staging -maxdepth 1 -name '*.jar' | wc -l)" -ge 4
+
+      # 8. 上传构建制品
+      - name: Upload JAR artifacts
+        if: success()
+        uses: actions/upload-artifact@v7
+        with:
+          name: passjava-application-jars
+          path: staging/*.jar
+          if-no-files-found: error
+          retention-days: 14

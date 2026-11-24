@@ -1,38 +1,44 @@
 
 package org.example.passjava.study.support;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.RabbitMQContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
 public abstract class StudyTestcontainers {
 
-    @Container
+    // MySQL
     public static final MySQLContainer<?> MYSQL =
             new MySQLContainer<>("mysql:8.0")
                     .withDatabaseName("passjava_study_test")
                     .withUsername("test")
-                    .withPassword("test123");
+                    .withPassword("test123")
+                    .withInitScript("sql/04_study.sql");
 
-    @Container
+    // Redis
     public static final GenericContainer<?> REDIS =
             new GenericContainer<>("redis:7.4-alpine")
                     .withExposedPorts(6379);
 
-    @Container
+    // RabbitMQ
     public static final RabbitMQContainer RABBITMQ =
             new RabbitMQContainer("rabbitmq:4.1-management");
 
+    /*
+     * 类加载时启动容器。
+     * 整个测试 JVM 期间保持运行，不再按测试类停止和重启。
+     */
+    static {
+        MYSQL.start();
+        REDIS.start();
+        RABBITMQ.start();
+    }
+
     @DynamicPropertySource
-    static void registerProperties(
-            DynamicPropertyRegistry registry) {
+    static void registerProperties(DynamicPropertyRegistry registry) {
 
         // MySQL
         registry.add(

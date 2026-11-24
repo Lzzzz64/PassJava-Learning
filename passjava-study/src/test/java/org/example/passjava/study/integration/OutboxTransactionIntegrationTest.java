@@ -14,6 +14,7 @@ import org.example.passjava.study.support.StudyTestcontainers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
@@ -35,6 +36,9 @@ import static org.mockito.Mockito.*;
         "spring.cloud.nacos.config.enabled=false",
         "app.jwt.secret=U8DDPRiGakUDEwVRjxxRkMP1c1RfYj0W8SmE+InP83c="
 })
+@DirtiesContext(
+        classMode = DirtiesContext.ClassMode.AFTER_CLASS
+)
 class OutboxTransactionIntegrationTest
         extends StudyTestcontainers {
 
@@ -46,7 +50,6 @@ class OutboxTransactionIntegrationTest
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    @Sql("/sql/04_study.sql")
     void duplicateEventShouldOnlyIncreaseOnce() {
 
         String eventId = UUID.randomUUID().toString();
@@ -112,7 +115,6 @@ class OutboxTransactionIntegrationTest
 
 
     @Test
-    @Sql("/sql/04_study.sql")
     void concurrentDuplicateEventsShouldCountOnce()
             throws Exception {
 
@@ -186,7 +188,6 @@ class OutboxTransactionIntegrationTest
     }
 
     @Test
-    @Sql("/sql/04_study.sql")
     void onlyOnePublisherShouldClaimEvent()
             throws Exception {
 
