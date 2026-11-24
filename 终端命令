@@ -20,3 +20,29 @@ docker compose --env-file docker/.env -f docker/compose.yml up -d --build questi
 
 # 第三步，查看日志：
 docker logs -f passjava-study
+
+-----------------------
+# 开发新功能还是修复 Bug，都应该先创建分支，再修改代码。
+# 1. 同步主分支
+git switch master
+git pull
+
+# 2. 创建修复分支
+git switch -c fix/xxx
+
+# 3. 修改代码
+
+# 4. 提交修改
+git add .
+git commit -m "fix: xxx"
+
+# 5. 推送修复分支
+git push -u origin fix/xxx
+
+# 6. 在 GitHub 创建 PR
+
+# 7. CI 通过后，在 GitHub 合并
+
+# 8. 同步本地主分支
+git switch master
+git pull
